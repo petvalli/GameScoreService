@@ -25,6 +25,8 @@ class Game(db.Model):
 class Level(db.Model):
     """
     Level "name" must be unique in relation to a game.
+    "type" defines if scores on the level are in "number" (points, for example) or "time"
+    (milliseconds) format.
     "scores" will be filled with all scores for the level and will be deleted if the level is
     deleted.
     "order" is either "descending" or "ascending" to indicate if lower or higher score is better.
@@ -35,6 +37,7 @@ class Level(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), nullable=False)
+    type = db.Column(db.String(8), nullable=False, default="number")
     order = db.Column(db.String(64), nullable=False, default="descending")
     game_id = db.Column(db.Integer, db.ForeignKey("game.id", ondelete="CASCADE"), nullable=False)
 
@@ -48,8 +51,7 @@ class Level(db.Model):
 class Score(db.Model):
     """
     Only one score per player (player_id) per level (level_id) is allowed.
-    "value" must be integer and "type" defines if it's a "number" (points, for example) or "time"
-    (milliseconds expected).
+    "value" must be integer.
     "date" is in yyyy-mm-dd hh:mm:ss format.
     Levels and Players are back-populated with scores.
     """
@@ -58,7 +60,6 @@ class Score(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     value = db.Column(db.Integer, nullable=False)
-    type = db.Column(db.String(8), nullable=False, default="number")
     date = db.Column(db.String(19), nullable=False)
     level_id = db.Column(db.Integer, db.ForeignKey("level.id", ondelete="CASCADE"), nullable=False)
     player_id = db.Column(db.Integer, db.ForeignKey("player.id", ondelete="CASCADE"), nullable=False)

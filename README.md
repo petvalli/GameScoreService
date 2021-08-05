@@ -17,10 +17,10 @@ The instructions shown in this file apply on Linux based environments.
 # Preparations
 
 You might want to run the API in a virtual environment and to create it, use the following command line:
-```python3 -m venv gamescoreservice```
+```python3 -m venv gamescoreservice-env```
 
 Then activate the newly created virtual environment:
-```source gamescoreservice/bin/activate```
+```source gamescoreservice-env/bin/activate```
 
 Change your current working directory into project's directory for the next steps.
 
@@ -38,6 +38,8 @@ The project can be installed with the following command:
 
 ## Preparations
 
+If you haven't activated the virtual Python environment (see the previous steps), do it now.
+
 Couple environment variables need to be set. It can be made with:
 ```source setup_flask_env```
 
@@ -45,7 +47,7 @@ Now you can initialize a new empty database if you haven't made it before:
 ```flask init-db```
 
 
-## Optional step for testing
+## Optional Step for Testing
 
 To populate a newly created database with some test data:
 ```flask populate-db```
