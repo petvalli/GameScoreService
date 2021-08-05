@@ -1,0 +1,2 @@
+graft gamescoreservice/static
+global-exclude *.pyc
