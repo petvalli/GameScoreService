@@ -57,3 +57,6 @@ To populate a newly created database with some test data:
 
 To run the API, just use the following command:
 ```flask run```
+
+Or to set the env variables and launch the API at one go:
+```source run_gss```
