@@ -21,6 +21,30 @@ class Game(db.Model):
     def __repr__(self):
         return "G: {} <{}>".format(self.name, self.id)
 
+    @staticmethod
+    def get_schema():
+        schema = {
+            "type": "object",
+            "required": ["name"]
+        }
+        props = schema["properties"] = {}
+        props["name"] = {
+            "description": "Game's name",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9 ]{1,64}$"
+        }
+        props["publisher"] = {
+            "description": "Game's publisher",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9 ]{1,64}$"
+        }
+        props["genre"] = {
+            "description": "Game's genre",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9 ]{1,64}$"
+        }
+        return schema
+
 
 class Level(db.Model):
     """
@@ -47,6 +71,30 @@ class Level(db.Model):
     def __repr__(self):
         return "L: {} <{}>".format(self.name, self.id)
 
+    @staticmethod
+    def get_schema():
+        schema = {
+            "type": "object",
+            "required": ["name"]
+        }
+        props = schema["properties"] = {}
+        props["name"] = {
+            "description": "Level's name",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9_ ]{1,64}$"
+        }
+        props["type"] = {
+            "description": "Type of scores on this level",
+            "type": "string",
+            "pattern": "^number|time$"
+        }
+        props["order"] = {
+            "description": "Order of scores on this level",
+            "type": "string",
+            "pattern": "^descending|ascending$"
+        }
+        return schema
+
 
 class Score(db.Model):
     """
@@ -70,6 +118,34 @@ class Score(db.Model):
     def __repr__(self):
         return "S: {} <{}> L: {}".format(self.value, self.id, self.level_id)
 
+    @staticmethod
+    def get_schema():
+        schema = {
+            "type": "object",
+            "required": ["value", "player", "password"]
+        }
+        props = schema["properties"] = {}
+        props["value"] = {
+            "description": "Score value",
+            "type": "number"
+        }
+        props["date"] = {
+            "description": "Score timestamp",
+            "type": "string",
+            "pattern": "^[0-9]{4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]([+-][01][0-9]:[0-5][0-9])?$"
+        }
+        props["player"] = {
+            "description": "Player's unique name",
+            "type": "string",
+            "pattern": "^[a-z0-9_]{1,64}$"
+        }
+        props["password"] = {
+            "description": "Player's password (MD5 hash)",
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{32}$"
+        }
+        return schema
+
 
 class Player(db.Model):
     """
@@ -89,6 +165,30 @@ class Player(db.Model):
 
     def __repr__(self):
         return "{} <{}>".format(self.unique_name, self.id)
+
+    @staticmethod
+    def get_schema():
+        schema = {
+            "type": "object",
+            "required": ["name", "password"]
+        }
+        props = schema["properties"] = {}
+        props["name"] = {
+            "description": "Player's visible name",
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9 ]{1,64}$"
+        }
+        props["unique_name"] = {
+            "description": "Player's unique name",
+            "type": "string",
+            "pattern": "^[a-z0-9_]{1,64}$"
+        }
+        props["password"] = {
+            "description": "Player's password (MD5 hash)",
+            "type": "string",
+            "pattern": "^[a-fA-F0-9]{32}$"
+        }
+        return schema
 
 
 @click.command("init-db")
