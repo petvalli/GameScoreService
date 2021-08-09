@@ -1,3 +1,2 @@
-export FLASK_APP=gamescoreservice
-export FLASK_ENV=development
+source setup_flask_env
 flask run
