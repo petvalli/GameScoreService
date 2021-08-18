@@ -26,6 +26,7 @@ Change your current working directory into project's directory (GameScoreService
 # Installation
 
 Exact requirements are listed in the requirements.txt file, which can be given to the pip command:
+
 ```pip install -r requirements.txt```
 
 OR you can install Flask, pysqlite3, flask-sqlalchemy, flask-restful, and jsonschema separately.
@@ -33,7 +34,8 @@ OR you can install Flask, pysqlite3, flask-sqlalchemy, flask-restful, and jsonsc
 pip install pysqlite3
 pip install flask-sqlalchemy
 pip install flask-restful
-pip install jsonschema```
+pip install jsonschema
+```
 
 The project can be installed with the following command:
 ```pip install -e .```
@@ -105,6 +107,7 @@ And to test the API/resources only:
 ### Coverage Reports
 
 More detailed coverage reports can be generated with the *coverage* plugin:
+
 ```pytest --cov-report term-missing --cov=gamescoreservice```
 
 ### Revealed Issues
