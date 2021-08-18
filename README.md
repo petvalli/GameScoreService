@@ -28,6 +28,13 @@ Change your current working directory into project's directory (GameScoreService
 Exact requirements are listed in the requirements.txt file, which can be given to the pip command:
 ```pip install -r requirements.txt```
 
+OR you can install Flask, pysqlite3, flask-sqlalchemy, flask-restful, and jsonschema separately.
+```pip install Flask
+pip install pysqlite3
+pip install flask-sqlalchemy
+pip install flask-restful
+pip install jsonschema```
+
 The project can be installed with the following command:
 ```pip install -e .```
 
