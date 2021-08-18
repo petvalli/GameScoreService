@@ -18,8 +18,8 @@ class Game(db.Model):
     
     levels = db.relationship("Level", cascade="all, delete-orphan", back_populates="game")
 
-    def __repr__(self):
-        return "G: {} <{}>".format(self.name, self.id)
+    # def __repr__(self):
+    #     return "G: {} <{}>".format(self.name, self.id)
 
     @staticmethod
     def get_schema():
@@ -31,17 +31,17 @@ class Game(db.Model):
         props["name"] = {
             "description": "Game's name",
             "type": "string",
-            "pattern": "^[a-zA-Z0-9 ]{1,64}$"
+            "pattern": "^[a-zA-Z0-9_ ]{1,64}$"
         }
         props["publisher"] = {
             "description": "Game's publisher",
             "type": "string",
-            "pattern": "^[a-zA-Z0-9 ]{1,64}$"
+            "pattern": "^[a-zA-Z0-9_ ]{0,64}$"
         }
         props["genre"] = {
             "description": "Game's genre",
             "type": "string",
-            "pattern": "^[a-zA-Z0-9 ]{1,64}$"
+            "pattern": "^[a-zA-Z0-9_ ]{0,64}$"
         }
         return schema
 
@@ -68,14 +68,14 @@ class Level(db.Model):
     game = db.relationship("Game", back_populates="levels")
     scores = db.relationship("Score", cascade="all, delete-orphan", back_populates="level")
 
-    def __repr__(self):
-        return "L: {} <{}>".format(self.name, self.id)
+    # def __repr__(self):
+    #     return "L: {} <{}>".format(self.name, self.id)
 
     @staticmethod
     def get_schema():
         schema = {
             "type": "object",
-            "required": ["name"]
+            "required": ["name", "type", "order"]
         }
         props = schema["properties"] = {}
         props["name"] = {
@@ -84,12 +84,12 @@ class Level(db.Model):
             "pattern": "^[a-zA-Z0-9_ ]{1,64}$"
         }
         props["type"] = {
-            "description": "Type of scores on this level",
+            "description": "Type of scores (number or time)",
             "type": "string",
             "pattern": "^number|time$"
         }
         props["order"] = {
-            "description": "Order of scores on this level",
+            "description": "Order of scores (descending or ascending)",
             "type": "string",
             "pattern": "^descending|ascending$"
         }
@@ -115,8 +115,8 @@ class Score(db.Model):
     level = db.relationship("Level", back_populates="scores")
     player = db.relationship("Player", back_populates="scores")
 
-    def __repr__(self):
-        return "S: {} <{}> L: {}".format(self.value, self.id, self.level_id)
+    # def __repr__(self):
+    #     return "S: {} <{}> L: {}".format(self.value, self.id, self.level_id)
 
     @staticmethod
     def get_schema():
@@ -132,7 +132,9 @@ class Score(db.Model):
         props["date"] = {
             "description": "Score timestamp",
             "type": "string",
-            "pattern": "^[0-9]{4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]([+-][01][0-9]:[0-5][0-9])?$"
+            "pattern": "^$|^[0-9]{4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]$"
+            # If implementing tz support:
+            # "pattern": "^$|^[0-9]{4}-[01][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9]([+-][01][0-9]:[0-5][0-9])?$"
         }
         props["player"] = {
             "description": "Player's unique name",
@@ -140,7 +142,7 @@ class Score(db.Model):
             "pattern": "^[a-z0-9_]{1,64}$"
         }
         props["password"] = {
-            "description": "Player's password (MD5 hash)",
+            "description": "Player's password",
             "type": "string",
             "pattern": "^[a-fA-F0-9]{32}$"
         }
@@ -163,8 +165,8 @@ class Player(db.Model):
 
     scores = db.relationship("Score", cascade="all, delete-orphan", back_populates="player")
 
-    def __repr__(self):
-        return "{} <{}>".format(self.unique_name, self.id)
+    # def __repr__(self):
+    #     return "{} <{}>".format(self.unique_name, self.id)
 
     @staticmethod
     def get_schema():
@@ -176,15 +178,15 @@ class Player(db.Model):
         props["name"] = {
             "description": "Player's visible name",
             "type": "string",
-            "pattern": "^[a-zA-Z0-9 ]{1,64}$"
+            "pattern": "^[a-zA-Z0-9_ ]{1,64}$"
         }
         props["unique_name"] = {
             "description": "Player's unique name",
             "type": "string",
-            "pattern": "^[a-z0-9_]{1,64}$"
+            "pattern": "^[a-z0-9_]{0,64}$"
         }
         props["password"] = {
-            "description": "Player's password (MD5 hash)",
+            "description": "Player's password",
             "type": "string",
             "pattern": "^[a-fA-F0-9]{32}$"
         }
@@ -216,32 +218,31 @@ def populate_db_command():
     from sqlalchemy.exc import IntegrityError, OperationalError
     try:
         genre = ["Racing", "Puzzle", "Action"]
+        p = {}
         for i in range(1, 4):
-            g = Game(
-                name="Game {}".format(i),
-                publisher="Publisher {}".format(i),
-                genre=genre[i-1]
-            )
-            p = Player(
+            p[i] = Player(
                 name="Player {}".format(i),
                 unique_name="player_{}".format(i),
                 password=hashlib.md5("pw {}".format(i).encode("utf-8")).hexdigest()
             )
-            db.session.add(p)
+            db.session.add(p[i])
+        for i in range(1, 4):
+            g = Game(
+                name="Game {}".format(i),
+                publisher="Publisher {}".format(i),
+                genre=genre[i - 1]
+            )
             db.session.add(g)
             db.session.commit()
             for j in range(1, 4):
-                lv = Level(
-                    name="Level {}".format(j),
-                    game_id=g.id
-                )
+                lv = Level(name="Level {}".format(j), game_id=g.id)
                 db.session.add(lv)
                 db.session.commit()
                 for k in range(1, 4):
                     s = Score(
                         value=k*100,
-                        level_id=lv.id,
-                        player_id=k,
+                        level=lv,
+                        player=p[k],
                         date=datetime.now().isoformat(' ', 'seconds')
                     )
                     db.session.add(s)

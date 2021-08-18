@@ -23,6 +23,7 @@ class ScoreItem(Resource):
             return create_error_response(404, "Not found", "Score wasn't found.")
 
         body = ScoreBuilder(
+            name=player,
             value=db_entry.value,
             type=db_entry.level.type,
             date=db_entry.date
@@ -60,17 +61,19 @@ class ScoreItem(Resource):
         pw = request.json["password"]
         db_player = Player.query.filter_by(unique_name=ply).first()
         if db_player is None:
-            return create_error_response(401, "Unauthorized", "Player wasn't found.")
+            return create_error_response(404, "Not found", "Player wasn't found.")
+        elif ply != player:
+            return create_error_response(403, "Forbidden", "Score owner cannot be changed.")
         elif db_player.password.lower() != pw.lower():
             return create_error_response(401, "Unauthorized", "Invalid password.")
 
         # Set new data
         db_entry.value = request.json["value"]
+        db_entry.date = datetime.now().isoformat(' ', 'seconds')
         if "date" in request.json:
-            db_entry.date = request.json["date"]
-            # Add timezone handling
-        else:
-            db_entry.date = datetime.now().isoformat(' ', 'seconds')
+            if request.json["date"] != "":
+                db_entry.date = request.json["date"]
+                # Add timezone handling
 
         db.session.commit()
 

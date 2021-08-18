@@ -349,7 +349,7 @@ class TestPlayerItem(object):
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 401
 
-        # test with another player
+        # test with existing player
         valid["unique_name"] = "player_3"
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 409
@@ -358,6 +358,12 @@ class TestPlayerItem(object):
         valid.pop("name")
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 400
+
+        # test with new non-existing unique name
+        valid = _get_json_object("player", 2)
+        valid["unique_name"] = "player_33"
+        resp = client.put(self.RESOURCE_URL, json=valid)
+        assert resp.status_code == 301
 
     def test_delete(self, client):
         resp = client.delete(self.RESOURCE_URL)
@@ -605,7 +611,7 @@ class TestScoreItem(object):
         # test with another player
         valid["player"] = "player_3"
         resp = client.put(self.RESOURCE_URL, json=valid)
-        assert resp.status_code == 409
+        assert resp.status_code == 403
 
         # test with non-existing player
         valid["player"] = "player_5"

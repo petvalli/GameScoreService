@@ -45,10 +45,15 @@ class LevelItem(Resource):
             )
             item.add_control("profile", SCORE_PROFILE)
             body["items"].append(item)
+        if db_entry.order == "descending":
+            body["items"].sort(key=lambda v: v["value"], reverse=True)
+        else:
+            body["items"].sort(key=lambda v: v["value"])
 
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def put(self, game, level):
+        status = 204
         if not request.json:
             return create_error_response(415, "Unsupported media type", "Requests must be JSON")
         try:
@@ -60,15 +65,24 @@ class LevelItem(Resource):
         if db_entry is None:
             return create_error_response(404, "Not found", "Level '{}' wasn't found.".format(level))
 
-        db_entry.name = request.json["name"]
-        if "type" in request.json:
-            db_entry.type = request.json["type"]
-        if "order" in request.json:
-            db_entry.order = request.json["order"]
+        name = request.json["name"]
+        if db_entry.name != name and Level.query.join(Game).filter(Game.name == game, Level.name == name).first():
+
+            return create_error_response(409, "Already exists", "Level '{}' already exists.".format(name))
+
+        if db_entry.name != name:
+            status = 301
+            headers = {"Location": url_for("api.levelitem", game=game, level=name)}
+        else:
+            headers = None
+
+        db_entry.name = name
+        db_entry.type = request.json["type"]
+        db_entry.order = request.json["order"]
 
         db.session.commit()
 
-        return Response(status=204)
+        return Response(status=status, headers=headers)
 
     def post(self, game, level):
         if not request.json:
@@ -87,17 +101,17 @@ class LevelItem(Resource):
         pw = request.json["password"]
         db_player = Player.query.filter_by(unique_name=ply).first()
         if db_player is None:
-            return create_error_response(401, "Unauthorized", "Player wasn't found.")
+            return create_error_response(404, "Not found", "Player wasn't found.")
         elif db_player.password.lower() != pw.lower():
             return create_error_response(401, "Unauthorized", "Invalid password.")
 
         score = Score()
         score.value = request.json["value"]
+        score.date = datetime.now().isoformat(' ', 'seconds')
         if "date" in request.json:
-            score.date = request.json["date"]
-            # Add timezone handling
-        else:
-            score.date = datetime.now().isoformat(' ', 'seconds')
+            if request.json["date"] != "":
+                score.date = request.json["date"]
+                # Add timezone handling
         score.level = db_level
         score.player = db_player
 

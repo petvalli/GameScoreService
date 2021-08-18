@@ -25,7 +25,7 @@ api.add_resource(LevelItem, "/games/<game>/<level>/")
 api.add_resource(ScoreItem, "/games/<game>/<level>/<player>/")
 
 
-# View functions:
+# Entry point:
 
 @api_bp.route("/")
 def entry_point():
@@ -38,21 +38,3 @@ def entry_point():
     body.add_control_games_all()
     body.add_control_players_all()
     return Response(json.dumps(body), 200, mimetype=MASON)
-
-
-@api_bp.route(LINK_RELATIONS_URL)
-def redirect_link_relations():
-    """
-    Redirect link relations to the Apiary documentation.
-    """
-
-    return redirect(APIARY_URL + "link-relations")
-
-
-@api_bp.route("/profiles/<profile>/")
-def redirect_profiles(profile):
-    """
-    Redirect profiles to the Apiary documentation.
-    """
-
-    return redirect(APIARY_URL + "profiles")

@@ -4,12 +4,10 @@
 * Student 1. Petteri Valli pvalli@paju.oulu.fi
 * Student 2. Mirva Luukkainen miluukka@paju.oulu.fi
 
-__Remember to include all required documentation and HOWTOs, including how to create and populate the database, how to run and test the API, the url to the entrypoint and instructions on how to setup and run the client__
-
 
 # Preface
 
-The GameScoreService API is developed under Python 3.9.x and it's recommended to have at least Python 3.3 to have the necessary tools included. The API uses SQLite 3 as its database engine.
+The GameScoreService API is developed under Python 3.9.x and it's recommended to have at least Python 3.3 to have the necessary tools included. The API uses SQLite 3 database engine and Flask framework with SQLAlchemy toolkit.
 
 The instructions shown in this file apply on Linux based environments.
 
@@ -17,12 +15,12 @@ The instructions shown in this file apply on Linux based environments.
 # Preparations
 
 You might want to run the API in a virtual environment and to create it, use the following command line:
-```python3 -m venv gamescoreservice-env```
+```python3 -m venv gss-env```
 
 Then activate the newly created virtual environment:
-```source gamescoreservice-env/bin/activate```
+```source gss-env/bin/activate```
 
-Change your current working directory into project's directory for the next steps.
+Change your current working directory into project's directory (GameScoreService) for the next steps.
 
 
 # Installation
@@ -47,9 +45,9 @@ Now you can initialize a new empty database if you haven't made it before:
 ```flask init-db```
 
 
-## Optional Step for Testing
+## Optional Database Populating
 
-To populate a newly created database with some test data:
+To populate a newly created database with some test data (optional step):
 ```flask populate-db```
 
 
@@ -60,3 +58,58 @@ To run the API, just use the following command:
 
 Or to set the env variables and launch the API at one go:
 ```source run_gss```
+
+
+## Accessing the API
+
+# Enrty Point
+
+The API is available at /api/ URI on the system you run it. By default it opens in the port 5000.
+
+When running both server and client on the same machine, it can be found from:
+```http://localhost:5000/api/```
+
+
+# Testing
+
+## Preparations
+
+Provided test scripts require installation of the *pytest* tool.
+
+Execute the following lines when your virtual environment is active:
+
+```pip install pytest
+pip install pytest-cov
+```
+
+## Running Tests
+
+### Basic Testing
+
+To run all tests, just launch *pytest* in the project directory:
+```pytest```
+
+Or to test only the database:
+```pytest tests/db_test.py```
+
+And to test the API/resources only:
+```pytest tests/api_test.py```
+
+### Coverage Reports
+
+More detailed coverage reports can be generated with the *coverage* plugin:
+```pytest --cov-report term-missing --cov=gamescoreservice```
+
+### Revealed Issues
+
+Functional testing was important part of the development, and it revealed few issues on the implementation. Main issues were with Put methods in resource classes. They weren't implemented for all resources and had some missing checks.
+
+
+# Client
+
+## Get the Client
+
+An example client that uses the API can be found from:
+
+
+## Configuring

@@ -79,6 +79,50 @@ class PlayerItem(Resource):
 
         return Response(json.dumps(body), 200, mimetype=MASON)
 
+    def put(self, player):
+        status = 204
+        if not request.json:
+            return create_error_response(415, "Unsupported media type", "Requests must be JSON")
+        try:
+            validate(request.json, Player.get_schema())
+        except ValidationError as e:
+            return create_error_response(400, "Invalid JSON document", str(e))
+
+        db_entry = Player.query.filter_by(unique_name=player).first()
+        if db_entry is None:
+            return create_error_response(404, "Not found", "Player '{}' wasn't found.".format(player))
+
+        uname = request.json["unique_name"]
+        if db_entry.unique_name != uname and Player.query.filter_by(unique_name=uname).first():
+            return create_error_response(409, "Already exists", "Player '{}' already exists.".format(uname))
+
+        if db_entry.password.lower() != request.json["password"].lower():
+            return create_error_response(401, "Unauthorized", "Invalid password.")
+
+        if db_entry.unique_name != uname:
+            status = 301
+            headers = {"Location": url_for("api.playeritem", player=uname)}
+        else:
+            headers = None
+
+        db_entry.name = request.json["name"]
+        db_entry.unique_name = request.json["unique_name"]
+        db_entry.password = request.json["password"]
+ 
+        db.session.commit()
+
+        return Response(status=status, headers=headers)
+
+    def delete(self, player):
+        db_entry = Player.query.filter_by(unique_name=player).first()
+        if db_entry is None:
+            return create_error_response(404, "Not found", "Player wasn't found.")
+
+        db.session.delete(db_entry)
+        db.session.commit()
+
+        return Response(status=204)
+
 
 class ScoresByCollection(Resource):
 

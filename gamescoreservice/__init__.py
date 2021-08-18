@@ -1,8 +1,10 @@
 import os
-from flask import Flask
+from flask import Flask, redirect
 from flask_sqlalchemy import SQLAlchemy
+from gamescoreservice.constants import *
 
 db = SQLAlchemy()
+
 
 # Based on http://flask.pocoo.org/docs/1.0/tutorial/factory/#the-application-factory
 # Modified to use Flask SQLAlchemy by Programmable Web Project course staff
@@ -31,5 +33,21 @@ def create_app(test_config=None):
     app.register_blueprint(api.api_bp)
     app.cli.add_command(models.init_db_command)
     app.cli.add_command(models.populate_db_command)
+
+    @app.route(LINK_RELATIONS_URL)
+    def redirect_link_relations():
+        """
+        Redirect link relations to the Apiary documentation.
+        """
+
+        return redirect(APIARY_URL + "link-relations")
+
+    @app.route("/profiles/<profile>/")
+    def redirect_profiles(profile):
+        """
+        Redirect profiles to the Apiary documentation.
+        """
+
+        return redirect(APIARY_URL + "profiles")
 
     return app

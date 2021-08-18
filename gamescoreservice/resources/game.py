@@ -88,6 +88,7 @@ class GameItem(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def put(self, game):
+        status = 204
         if not request.json:
             return create_error_response(415, "Unsupported media type", "Requests must be JSON")
         try:
@@ -99,7 +100,17 @@ class GameItem(Resource):
         if db_entry is None:
             return create_error_response(404, "Not found", "Game '{}' wasn't found.".format(game))
 
-        db_entry.name = request.json["name"]
+        name = request.json["name"]
+        if db_entry.name != name and Game.query.filter_by(name=name).first():
+            return create_error_response(409, "Already exists", "Game '{}' already exists.".format(name))
+
+        if db_entry.name != name:
+            status = 301
+            headers = {"Location": url_for("api.gameitem", game=name)}
+        else:
+            headers = None
+
+        db_entry.name = name
         if "publisher" in request.json:
             db_entry.publisher = request.json["publisher"]
         else:
@@ -111,7 +122,7 @@ class GameItem(Resource):
 
         db.session.commit()
 
-        return Response(status=204)
+        return Response(status=status, headers=headers)
 
     def post(self, game):
         if not request.json:
@@ -127,10 +138,8 @@ class GameItem(Resource):
 
         level = Level()
         level.name = request.json["name"]
-        if "type" in request.json:
-            level.type = request.json["type"]
-        if "order" in request.json:
-            level.order = request.json["order"]
+        level.type = request.json["type"]
+        level.order = request.json["order"]
         db_entry.levels.append(level)
 
         try:
