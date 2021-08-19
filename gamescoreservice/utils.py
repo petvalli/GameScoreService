@@ -3,7 +3,8 @@ from flask import Response, request, url_for
 from gamescoreservice.constants import *
 from gamescoreservice.models import *
 
-# create_error_response and MasonBuilder taken from the Programmable Web Project course material.
+# create_error_response and MasonBuilder taken from the Programmable Web Project course material:
+# https://lovelace.oulu.fi/ohjelmoitava-web/ohjelmoitava-web/
 
 
 def create_error_response(status_code, title, message=None):
@@ -80,8 +81,15 @@ class MasonBuilder(dict):
 
 
 class ScoreBuilder(MasonBuilder):
+    """
+    A subclass to build application specific Mason objects.
+    """
 
     def add_control_players_all(self):
+        """
+        Adds gss:players-all control, which leads to the Player collection.
+        """
+
         self.add_control(
             "gss:players-all",
             href=url_for("api.playercollection"),
@@ -90,6 +98,10 @@ class ScoreBuilder(MasonBuilder):
         )
 
     def add_control_games_all(self):
+        """
+        Adds gss:games-all control, which leads to the Game collection.
+        """
+
         self.add_control(
             "gss:games-all",
             href=url_for("api.gamecollection"),
@@ -98,6 +110,12 @@ class ScoreBuilder(MasonBuilder):
         )
 
     def add_control_scores_by(self, player):
+        """
+        Adds gss:scores-by control, which leads to the Scores-by collection.
+        
+        : param str player: Player's unique_name
+        """
+
         self.add_control(
             "gss:scores-by",
             href=url_for("api.scoresbycollection", player=player),
@@ -106,6 +124,10 @@ class ScoreBuilder(MasonBuilder):
         )
 
     def add_control_add_player(self):
+        """
+        Adds gss:add-player control, which is used to add a player into the Player collection.
+        """
+
         self.add_control(
             "gss:add-player",
             href=url_for("api.playercollection"),
@@ -116,6 +138,10 @@ class ScoreBuilder(MasonBuilder):
         )
 
     def add_control_add_game(self):
+        """
+        Adds gss:add-game control, which is used to add a game into the Game collection.
+        """
+
         self.add_control(
             "gss:add-game",
             href=url_for("api.gamecollection"),
@@ -126,6 +152,12 @@ class ScoreBuilder(MasonBuilder):
         )
 
     def add_control_add_level(self, game):
+        """
+        Adds gss:add-level control, which is used to add a level into the Game item (collection).
+
+        : param str game: Game's name
+        """
+
         self.add_control(
             "gss:add-level",
             href=url_for("api.gameitem", game=game),
@@ -136,6 +168,14 @@ class ScoreBuilder(MasonBuilder):
         )
 
     def add_control_add_score(self, game, level):
+        """
+        Adds gss:add-score control, which is used to add a score into the Level item (collection),
+        which is related to a specific Game item.
+
+        : param str game: Game's name
+        : param str level: Level's name
+        """
+
         self.add_control(
             "gss:add-score",
             href=url_for("api.levelitem", game=game, level=level),
@@ -146,6 +186,12 @@ class ScoreBuilder(MasonBuilder):
         )
 
     def add_control_edit_player(self, player):
+        """
+        Adds edit control, which is used to edit Player item.
+
+        : param str player: Player's unique_name
+        """
+
         self.add_control(
             "edit",
             url_for("api.playeritem", player=player),
@@ -156,6 +202,12 @@ class ScoreBuilder(MasonBuilder):
         )
 
     def add_control_edit_game(self, game):
+        """
+        Adds edit control, which is used to edit Game item.
+
+        : param str game: Game's name
+        """
+
         self.add_control(
             "edit",
             url_for("api.gameitem", game=game),
@@ -166,6 +218,13 @@ class ScoreBuilder(MasonBuilder):
         )
 
     def add_control_edit_level(self, game, level):
+        """
+        Adds edit control, which is used to edit Level item of a specific Game item.
+
+        : param str game: Game's name
+        : param str level: Level's name
+        """
+
         self.add_control(
             "edit",
             url_for("api.levelitem", game=game, level=level),
@@ -176,6 +235,15 @@ class ScoreBuilder(MasonBuilder):
         )
 
     def add_control_edit_score(self, game, level, player):
+        """
+        Adds edit control, which is used to edit Score item, which is related to certain game and
+        level.
+
+        : param str game: Game's name
+        : param str level: Level's name
+        : param str player: Player's unique_name
+        """
+
         self.add_control(
             "edit",
             url_for("api.scoreitem", game=game, level=level, player=player),

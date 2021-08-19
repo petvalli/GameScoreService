@@ -11,6 +11,18 @@ from gamescoreservice.constants import *
 
 
 class LevelItem(Resource):
+    """
+    The LevelItem resource supports GET, PUT, POST, and DELETE methods.
+    Possible response codes:
+    200 with a successful GET
+    201 with a successful POST
+    204 with a successful PUT or DELETE
+    301 if item's location changes
+    400 if JSON validating fails
+    404 if item was not found
+    409 if item exists already
+    415 if request is not JSON
+    """
 
     def get(self, game, level):
         db_entry = Level.query.join(Game).filter(Game.name == game, Level.name == level).first()

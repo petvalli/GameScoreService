@@ -211,6 +211,9 @@ def populate_db_command():
     This creates three games (Game 1, Game 2, and Game 3) with three
     levels on each (Level 1, Level 2, Level 3). Score per player is also
     added on each level.
+
+    raises IntegrityError: If the database contains the data already
+    raises OperationalError: If the database is not initialized
     """
 
     import hashlib

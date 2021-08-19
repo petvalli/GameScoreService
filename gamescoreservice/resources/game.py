@@ -10,6 +10,15 @@ from gamescoreservice.constants import *
 
 
 class GameCollection(Resource):
+    """
+    The GameCollection resource supports GET and POST methods.
+    Possible response codes:
+    200 with a successful GET
+    201 with a successful POST
+    400 if JSON validating fails
+    409 if item exists already
+    415 if request is not JSON
+    """
 
     def get(self):
         body = ScoreBuilder()
@@ -58,6 +67,18 @@ class GameCollection(Resource):
 
 
 class GameItem(Resource):
+    """
+    The GameItem resource supports GET, PUT, POST, and DELETE methods.
+    Possible response codes:
+    200 with a successful GET
+    201 with a successful POST
+    204 with a successful PUT or DELETE
+    301 if item's location changes
+    400 if JSON validating fails
+    404 if item was not found
+    409 if item exists already
+    415 if request is not JSON
+    """
 
     def get(self, game):
         db_entry = Game.query.filter_by(name=game).first()

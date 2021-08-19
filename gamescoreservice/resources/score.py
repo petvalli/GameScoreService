@@ -11,6 +11,18 @@ from gamescoreservice.constants import *
 
 
 class ScoreItem(Resource):
+    """
+    The ScoreItem resource supports GET, PUT, and DELETE methods.
+    Possible response codes:
+    200 with a successful GET
+    204 with a successful PUT or DELETE
+    400 if JSON validating fails
+    401 if password is invalid
+    403 if trying to change score owner
+    404 if item was not found
+    409 if item exists already
+    415 if request is not JSON
+    """
 
     def get(self, game, level, player):
         # Work-around for score item query. Fix it with better time.
