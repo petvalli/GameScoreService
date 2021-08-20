@@ -82,6 +82,7 @@ class LevelItem(Resource):
 
             return create_error_response(409, "Already exists", "Level '{}' already exists.".format(name))
 
+        # When changing level's name, location changes too
         if db_entry.name != name:
             status = 301
             headers = {"Location": url_for("api.levelitem", game=game, level=name)}

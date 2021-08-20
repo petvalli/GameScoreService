@@ -49,10 +49,7 @@ class PlayerCollection(Resource):
         player = Player()
         player.name = request.json["name"]
         player.password = request.json["password"]
-        if "unique_name" in request.json:
-            player.unique_name = request.json["unique_name"]
-        else:
-            player.unique_name = request.json["name"].lower().replace(" ", "_")
+        player.unique_name = request.json["name"].lower().replace(" ", "_")
 
         try:
             db.session.add(player)
@@ -113,7 +110,7 @@ class PlayerItem(Resource):
         if db_entry is None:
             return create_error_response(404, "Not found", "Player '{}' wasn't found.".format(player))
 
-        uname = request.json["unique_name"]
+        uname = request.json["name"].lower().replace(" ", "_")
         if db_entry.unique_name != uname and Player.query.filter_by(unique_name=uname).first():
             return create_error_response(409, "Already exists", "Player '{}' already exists.".format(uname))
 
@@ -125,9 +122,8 @@ class PlayerItem(Resource):
             headers = {"Location": url_for("api.playeritem", player=uname)}
         else:
             headers = None
-
         db_entry.name = request.json["name"]
-        db_entry.unique_name = request.json["unique_name"]
+        db_entry.unique_name = uname
         db_entry.password = request.json["password"]
  
         db.session.commit()

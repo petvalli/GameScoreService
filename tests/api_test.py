@@ -245,12 +245,6 @@ class TestPlayerCollection(object):
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 400
 
-        # test with valid, but without unique_name
-        valid = _get_json_object("player", 6)
-        valid.pop("unique_name")
-        resp = client.post(self.RESOURCE_URL, json=valid)
-        assert resp.status_code == 201
-
 
 class TestGameCollection(object):
     RESOURCE_URL = "/api/games/"
@@ -281,7 +275,19 @@ class TestGameCollection(object):
         assert resp.headers["Location"].endswith(self.RESOURCE_URL + valid["name"].replace(" ", "%20") + "/")
         resp = client.get(resp.headers["Location"])
         assert resp.status_code == 200
-        
+
+        # test without publisher
+        valid = _get_json_object("game", 6)
+        valid.pop("publisher")
+        resp = client.post(self.RESOURCE_URL, json=valid)
+        assert resp.status_code == 201
+
+        # test without genre
+        valid = _get_json_object("game", 7)
+        valid.pop("genre")
+        resp = client.post(self.RESOURCE_URL, json=valid)
+        assert resp.status_code == 201
+
         # send same data again for 409
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 409
@@ -350,7 +356,7 @@ class TestPlayerItem(object):
         assert resp.status_code == 401
 
         # test with existing player
-        valid["unique_name"] = "player_3"
+        valid["name"] = "Player 1"
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 409
 
@@ -359,11 +365,14 @@ class TestPlayerItem(object):
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 400
 
-        # test with new non-existing unique name
+        # test with new non-existing name and check it exists afterwards
         valid = _get_json_object("player", 2)
-        valid["unique_name"] = "player_33"
+        valid["name"] = "Player 33"
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 301
+        assert resp.headers["Location"].endswith(valid["name"].lower().replace(" ", "_") + "/")
+        resp = client.get(resp.headers["Location"])
+        assert resp.status_code == 200
 
     def test_delete(self, client):
         resp = client.delete(self.RESOURCE_URL)
@@ -432,10 +441,13 @@ class TestGameItem(object):
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 400
 
-        # test to change the name
+        # test to change the name and that it exists afterwards
         valid["name"] = "Testing"
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 301
+        assert resp.headers["Location"].endswith(valid["name"] + "/")
+        resp = client.get(resp.headers["Location"])
+        assert resp.status_code == 200
 
     def test_post(self, client):
         valid = _get_json_object("level", 5)
@@ -521,11 +533,13 @@ class TestLevelItem(object):
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 400
 
-        # test to change the name
+        # test to change the name and check it exists afterwards
         valid["name"] = "Testing"
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 301
-
+        assert resp.headers["Location"].endswith(valid["name"] + "/")
+        resp = client.get(resp.headers["Location"])
+        assert resp.status_code == 200
 
     def test_post(self, client):
         valid = _get_json_object("score", 4)

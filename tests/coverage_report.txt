@@ -4,12 +4,12 @@ Name                                     Stmts   Miss  Cover   Missing
 gamescoreservice/__init__.py                28      1    96%   20
 gamescoreservice/api.py                     26      0   100%
 gamescoreservice/constants.py                9      0   100%
-gamescoreservice/models.py                  98     26    73%   203, 216-253
+gamescoreservice/models.py                  97     26    73%   203, 219-256
 gamescoreservice/resources/__init__.py       0      0   100%
-gamescoreservice/resources/game.py         116      0   100%
+gamescoreservice/resources/game.py         118      0   100%
 gamescoreservice/resources/level.py         94      0   100%
-gamescoreservice/resources/player.py       104      0   100%
+gamescoreservice/resources/player.py       102      0   100%
 gamescoreservice/resources/score.py         61      0   100%
 gamescoreservice/utils.py                   47      0   100%
 ----------------------------------------------------------------------
-TOTAL                                      583     27    95%
+TOTAL                                      582     27    95%

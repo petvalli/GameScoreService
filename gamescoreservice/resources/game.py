@@ -48,10 +48,16 @@ class GameCollection(Resource):
 
         game = Game()
         game.name = request.json["name"]
+
+        # Treat missing request elements as empty strings
         if "publisher" in request.json:
             game.publisher = request.json["publisher"]
+        else:
+            game.publisher = ""
         if "genre" in request.json:
             game.genre = request.json["genre"]
+        else:
+            game.genre = ""
 
         try:
             db.session.add(game)
@@ -125,12 +131,14 @@ class GameItem(Resource):
         if db_entry.name != name and Game.query.filter_by(name=name).first():
             return create_error_response(409, "Already exists", "Game '{}' already exists.".format(name))
 
+        # When changing game's name, location changes too
         if db_entry.name != name:
             status = 301
             headers = {"Location": url_for("api.gameitem", game=name)}
         else:
             headers = None
 
+        # Treat missing request elements as empty strings
         db_entry.name = name
         if "publisher" in request.json:
             db_entry.publisher = request.json["publisher"]

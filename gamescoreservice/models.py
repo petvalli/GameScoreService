@@ -86,12 +86,12 @@ class Level(db.Model):
         props["type"] = {
             "description": "Type of scores (number or time)",
             "type": "string",
-            "pattern": "^number|time$"
+            "pattern": "^(number|time)$"
         }
         props["order"] = {
             "description": "Order of scores (descending or ascending)",
             "type": "string",
-            "pattern": "^descending|ascending$"
+            "pattern": "^(descending|ascending)$"
         }
         return schema
 
@@ -153,7 +153,7 @@ class Player(db.Model):
     """
     The Player model defines a user of the API.
     "name" has to be alphanumeric string that can contain spaces, but no other special chars.
-    "unique_name" should be the "name" in lowercase with underscores as space.
+    "unique_name" should be the "name" in lowercase with spaces as underscores.
     "password" should be an MD5 checksum string of user's real password.
     "scores" contain all scores by a user and they are deleted if the user is deleted.
     """
@@ -176,14 +176,9 @@ class Player(db.Model):
         }
         props = schema["properties"] = {}
         props["name"] = {
-            "description": "Player's visible name",
+            "description": "Player's name",
             "type": "string",
             "pattern": "^[a-zA-Z0-9_ ]{1,64}$"
-        }
-        props["unique_name"] = {
-            "description": "Player's unique name",
-            "type": "string",
-            "pattern": "^[a-z0-9_]{0,64}$"
         }
         props["password"] = {
             "description": "Player's password",
