@@ -27,6 +27,8 @@ class ScoreItem(Resource):
     def get(self, game, level, player):
         # Work-around for score item query. Fix it with better time.
         level_query = Level.query.join(Game).filter(Game.name == game, Level.name == level).first()
+        if level_query is None:
+            return create_error_response(404, "Not found", "Level wasn't found.")
         db_entry = Score.query.join(Level).join(Player).filter(
                 Level.id == level_query.id,
                 Player.unique_name == player
@@ -61,6 +63,8 @@ class ScoreItem(Resource):
 
         # Work-around for score item query. Fix it with better time.
         level_query = Level.query.join(Game).filter(Game.name == game, Level.name == level).first()
+        if level_query is None:
+            return create_error_response(404, "Not found", "Level wasn't found.")
         db_entry = Score.query.join(Level).join(Player).filter(
                 Level.id == level_query.id,
                 Player.unique_name == player
@@ -94,6 +98,8 @@ class ScoreItem(Resource):
     def delete(self, game, level, player):
         # Work-around for score item query. Fix it with better time.
         level_query = Level.query.join(Game).filter(Game.name == game, Level.name == level).first()
+        if level_query is None:
+            return create_error_response(404, "Not found", "Level wasn't found.")
         db_entry = Score.query.join(Level).join(Player).filter(
                 Level.id == level_query.id,
                 Player.unique_name == player
