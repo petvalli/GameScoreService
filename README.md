@@ -29,7 +29,8 @@ Exact requirements are listed in the requirements.txt file, which can be given t
 ```pip install -r requirements.txt```
 
 OR you can install Flask, pysqlite3, flask-sqlalchemy, flask-restful, and jsonschema separately.  
-```pip install Flask
+```
+pip install Flask
 pip install pysqlite3
 pip install flask-sqlalchemy
 pip install flask-restful
@@ -85,7 +86,8 @@ When running both server and client on the same machine, it can be found from:
 Provided test scripts require installation of the *pytest* tool.
 
 Execute the following lines when your virtual environment is active:  
-```pip install pytest
+```
+pip install pytest
 pip install pytest-cov
 ```
 
@@ -116,8 +118,8 @@ Functional testing was important part of the development, and it revealed few is
 
 ## About
 
-An example client that uses the API can be found from:
-
+An example client that uses the API can be found from:  
+[GSS Submitter](https://github.com/petvalli/GSS_Submitter)
 
 It is coded in [Hollywood](https://www.hollywood-mal.com/index.html) 9.0, which is a Lua based scripting language, but which also offers options to compile scripts as applets that can be run with the [Hollywood Player](https://www.hollywood-mal.com/download.html) application or even as stand-alone executables for about 15 different platforms.
 
@@ -126,6 +128,7 @@ It is coded in [Hollywood](https://www.hollywood-mal.com/index.html) 9.0, which 
 - [RapaGUI plugin](https://www.hollywood-mal.com/download.html) (not needed on Android)
 - [hURL plugin](https://www.hollywood-mal.com/download.html)
 - On Linux platforms: OpenSSL 1.0.x (1.1.x won't work)
+- Operating system specific requirements can be seen [here](https://www.hollywood-mal.com/docs/html/hollywood/Requirements_.html)
 
 **Note:** When running provided pre-compiled executables, the plugins are linked in the executable files and installation of them is not required!
 
