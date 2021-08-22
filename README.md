@@ -28,7 +28,7 @@ Change your current working directory into project's directory (GameScoreService
 Exact requirements are listed in the requirements.txt file, which can be given to the pip command:  
 ```pip install -r requirements.txt```
 
-The project can then be installed with the following command:  
+The project can be installed with the following command:  
 ```pip install -e .```
 
 
