@@ -130,7 +130,7 @@ There are three options to run the client application.
 1. If you have the Hollywood development environment installed, just use the Hollywood interpreter to run the script file:  
 ```hollywood gss_submitter.hws```
 2. Run a compiled applet in Hollywood Player on any of the supported platforms (plugin installation may vary depeding of the platform. For example, on Android it must be placed in the Hollywood/Plugins/ directory found on your device's internal storage or SD card after installation of the player).
-3. Run a [pre-compiled executable](https://github.com/petvalli/GSS_Submitter/releases/tag/v1.0) (provided for Windows (x64) and Linux (x64/GTK3) in this example project), this is the easiest solution.
+3. Run a [pre-compiled executable](https://github.com/petvalli/GSS_Submitter/releases/tag/v1.0) (provided for Windows (x64) and Linux (x64/GTK3) in this example project), this is the easiest solution. Note that you might need to give the execute permission for the downloaded file.
 
 ## Configuring
 
