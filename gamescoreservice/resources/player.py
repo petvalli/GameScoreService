@@ -21,6 +21,10 @@ class PlayerCollection(Resource):
     """
 
     def get(self):
+        """
+        GET method for the Player collection. Lists Player items.
+        """
+
         body = ScoreBuilder()
         body.add_namespace("gss", LINK_RELATIONS_URL)
         body.add_control("self", url_for("api.playercollection"))
@@ -38,6 +42,11 @@ class PlayerCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def post(self):
+        """
+        POST method for the Player collection. Adds a new Player and includes the Location header
+        in the response.
+        """
+
         if not request.json:
             return create_error_response(415, "Unsupported media type", "Requests must be JSON")
 
@@ -79,6 +88,12 @@ class PlayerItem(Resource):
     """
 
     def get(self, player):
+        """
+        GET method for the Player item information.
+
+        :param player: Player's name
+        """
+
         db_entry = Player.query.filter_by(unique_name=player).first()
         if db_entry is None:
             return create_error_response(404, "Not found", "Player '{}' wasn't found.".format(player))
@@ -98,6 +113,13 @@ class PlayerItem(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def put(self, player):
+        """
+        PUT method for editing the Player item. Includes the Location header if the name is
+        changed. Requires password authentication.
+
+        :param player: Player's name
+        """
+
         status = 204
         if not request.json:
             return create_error_response(415, "Unsupported media type", "Requests must be JSON")
@@ -131,6 +153,12 @@ class PlayerItem(Resource):
         return Response(status=status, headers=headers)
 
     def delete(self, player):
+        """
+        DELETE method for the Player item. Deletes the resource.
+
+        :param player: Player's name
+        """
+
         db_entry = Player.query.filter_by(unique_name=player).first()
         if db_entry is None:
             return create_error_response(404, "Not found", "Player wasn't found.")
@@ -150,6 +178,12 @@ class ScoresByCollection(Resource):
     """
 
     def get(self, player):
+        """
+        GET method for the ScoresBy collection. Lists score items.
+
+        :param player: Player's name
+        """
+
         db_entry = Player.query.filter_by(unique_name=player).first()
         if db_entry is None:
             return create_error_response(404, "Not found", "Player '{}' wasn't found.".format(player))

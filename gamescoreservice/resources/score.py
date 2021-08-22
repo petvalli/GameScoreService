@@ -25,6 +25,14 @@ class ScoreItem(Resource):
     """
 
     def get(self, game, level, player):
+        """
+        GET method for the Score item information.
+
+        :param game: Game's name
+        :param level: Level's name
+        :param player: Player's unique name
+        """
+
         # Work-around for score item query. Fix it with better time.
         level_query = Level.query.join(Game).filter(Game.name == game, Level.name == level).first()
         if level_query is None:
@@ -54,6 +62,15 @@ class ScoreItem(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def put(self, game, level, player):
+        """
+        PUT method for editing the Score item. Checks player authentication and doesn't allow to
+        change the score ownership to another player.
+
+        :param game: Game's name
+        :param level: Level's name
+        :param player: Player's unique name
+        """
+
         if not request.json:
             return create_error_response(415, "Unsupported media type", "Requests must be JSON")
         try:
@@ -96,6 +113,14 @@ class ScoreItem(Resource):
         return Response(status=204)
 
     def delete(self, game, level, player):
+        """
+        DELETE method for the Score item. Deletes the resource.
+
+        :param game: Game's name
+        :param level: Level's name
+        :param player: Player's unique name
+        """
+
         # Work-around for score item query. Fix it with better time.
         level_query = Level.query.join(Game).filter(Game.name == game, Level.name == level).first()
         if level_query is None:

@@ -25,6 +25,13 @@ class LevelItem(Resource):
     """
 
     def get(self, game, level):
+        """
+        GET method for the Level item information. Lists score items in the defined order.
+
+        :param game: Game's name
+        :param level: Level's name
+        """
+
         db_entry = Level.query.join(Game).filter(Game.name == game, Level.name == level).first()
         if db_entry is None:
             return create_error_response(404, "Not found", "Level '{}' wasn't found.".format(level))
@@ -65,6 +72,13 @@ class LevelItem(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def put(self, game, level):
+        """
+        PUT method for editing the Level item. Includes the Location header if the name changes.
+
+        :param game: Game's name
+        :param level: Level's name
+        """
+
         status = 204
         if not request.json:
             return create_error_response(415, "Unsupported media type", "Requests must be JSON")
@@ -98,6 +112,14 @@ class LevelItem(Resource):
         return Response(status=status, headers=headers)
 
     def post(self, game, level):
+        """
+        POST method for the Level item. Adds a new score and includes the Location header in the
+        response. Checks player authentication.
+
+        :param game: Game's name
+        :param level: Level's name
+        """
+
         if not request.json:
             return create_error_response(415, "Unsupported media type", "Requests must be JSON")
         try:
@@ -139,6 +161,13 @@ class LevelItem(Resource):
         })
 
     def delete(self, game, level):
+        """
+        DELETE method for the Level item. Deletes the resource.
+
+        :param game: Game's name
+        :param level: Level's name
+        """
+
         db_entry = Level.query.join(Game).filter(Game.name == game, Level.name == level).first()
         if db_entry is None:
             return create_error_response(404, "Not found", "Level '{}' wasn't found.".format(level))

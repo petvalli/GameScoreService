@@ -21,6 +21,10 @@ class GameCollection(Resource):
     """
 
     def get(self):
+        """
+        GET method for the Game collection. Lists Game items.
+        """
+
         body = ScoreBuilder()
         body.add_namespace("gss", LINK_RELATIONS_URL)
         body.add_control("self", url_for("api.gamecollection"))
@@ -39,6 +43,11 @@ class GameCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def post(self):
+        """
+        POST method for the Game collection. Adds a new Game and includes the Location header in
+        the response.
+        """
+
         if not request.json:
             return create_error_response(415, "Unsupported media type", "Requests must be JSON")
         try:
@@ -87,6 +96,12 @@ class GameItem(Resource):
     """
 
     def get(self, game):
+        """
+        GET method for the Game item information. Lists Level items.
+
+        :param game: Game's name
+        """
+
         db_entry = Game.query.filter_by(name=game).first()
         if db_entry is None:
             return create_error_response(404, "Not found", "Game '{}' wasn't found.".format(game))
@@ -115,6 +130,12 @@ class GameItem(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def put(self, game):
+        """
+        PUT method for editing the Game item. Includes the Location header if the name is changed.
+
+        :param game: Game's name
+        """
+
         status = 204
         if not request.json:
             return create_error_response(415, "Unsupported media type", "Requests must be JSON")
@@ -154,6 +175,13 @@ class GameItem(Resource):
         return Response(status=status, headers=headers)
 
     def post(self, game):
+        """
+        POST method for the Game item. Adds a new level and includes the Location header in the
+        response.
+
+        :param game: Game's name
+        """
+
         if not request.json:
             return create_error_response(415, "Unsupported media type", "Requests must be JSON")
         try:
@@ -183,6 +211,12 @@ class GameItem(Resource):
         })
 
     def delete(self, game):
+        """
+        DELETE method for the Game item. Deletes the resource.
+
+        :param game: Game's name
+        """
+
         db_entry = Game.query.filter_by(name=game).first()
         if db_entry is None:
             return create_error_response(404, "Not found", "Game '{}' wasn't found.".format(game))
